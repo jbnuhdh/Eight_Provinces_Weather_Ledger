@@ -845,6 +845,14 @@
       <input value="{{ chatInput }}" onInput="{{ onChatInput }}" onKeyDown="{{ onChatKeydown }}" placeholder="궁금한 날씨를 물어봐!" style="flex:1; font-family:'Galmuri11'; font-size:13px; padding:9px 10px; color:#3a2614; background:#fff; border:3px solid #c4a874; outline:none;">
       <button onClick="{{ onChatSend }}" style="flex:none; font-family:'Galmuri14'; font-size:14px; padding:0 16px; color:#3a2614; background:#ffd24a; border:3px solid #3a2614; box-shadow:2px 2px 0 #a9762b; cursor:pointer;">전송</button>
     </div>
+    <!-- 출처 표시. 라이선스 의무다 — Kanana는 'Powered by Kanana' 명시를,
+         Open-Meteo는 CC BY 4.0에 따라 출처 표시를 요구한다. 관측 자료
+         출처도 함께 밝힌다. -->
+    <div style="flex:none; padding:6px 10px 9px; border-top:2px solid #e7d2a4; background:#f6ead0; font-size:9px; line-height:1.5; color:#8a6a48;">
+      관측 자료 기상청 ASOS·AWS · 북한 WMO GTS 27지점 &nbsp;|&nbsp;
+      현재 날씨 <a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8a6a48;">Open-Meteo</a> (CC BY 4.0) &nbsp;|&nbsp;
+      Powered by Kanana (kakaocorp/kanana-2-30b-a3b-instruct)
+    </div>
   </div>
 </div>
 </sc-if>
@@ -1700,7 +1708,7 @@ class Component extends DCLogic {
     };
     // 자체 호스팅 LLM 게이트웨이 호출. 실패하면 내장 날씨 지식으로 대체한다.
     // 시스템 프롬프트·중의어 규칙·기상 관측 조회는 전부 서버가 맡는다.
-    const WEATHER_API = 'https://territory-kde-sic-protect.trycloudflare.com/chat';
+    const WEATHER_API = 'https://beauty-office-blvd-isaac.trycloudflare.com/chat';
     try {
       const r = await fetch(WEATHER_API, {
         method: 'POST',
