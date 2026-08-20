@@ -851,7 +851,8 @@
     <div style="flex:none; padding:6px 10px 9px; border-top:2px solid #e7d2a4; background:#f6ead0; font-size:9px; line-height:1.5; color:#8a6a48;">
       관측 자료 기상청 ASOS·AWS · 북한 WMO GTS 27지점 &nbsp;|&nbsp;
       현재 날씨 <a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:#8a6a48;">Open-Meteo</a> (CC BY 4.0) &nbsp;|&nbsp;
-      Powered by Kanana (kakaocorp/kanana-2-30b-a3b-instruct)
+      Powered by Kanana (kakaocorp/kanana-2-30b-a3b-instruct-2601)<br>
+      Kanana is licensed in accordance with the Kanana License Agreement. Copyright © KAKAO Corp. All Rights Reserved.
     </div>
   </div>
 </div>
@@ -1708,7 +1709,7 @@ class Component extends DCLogic {
     };
     // 자체 호스팅 LLM 게이트웨이 호출. 실패하면 내장 날씨 지식으로 대체한다.
     // 시스템 프롬프트·중의어 규칙·기상 관측 조회는 전부 서버가 맡는다.
-    const WEATHER_API = 'https://beauty-office-blvd-isaac.trycloudflare.com/chat';
+    const WEATHER_API = 'https://decide-platform-asus-direction.trycloudflare.com/chat';
     try {
       const r = await fetch(WEATHER_API, {
         method: 'POST',
