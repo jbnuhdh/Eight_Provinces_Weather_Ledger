@@ -1,0 +1,8 @@
+station_id,station_name,station_type,region,latitude,longitude,elevation,zone_type,include_in_content
+102,백령도,ASOS,인천 옹진군(황해 먼바다),37.97396,124.71237,36.0,sea,1
+47069,해주,GTS,황해남도 해주시,38.03333,125.70000,79.0,coastal,1
+47060,남포,GTS,남포시(대동강 하구),38.71667,125.38333,47.0,estuary,1
+47065,사리원,GTS,황해북도 사리원시,38.51667,125.76667,52.0,inland,1
+47068,룡연,GTS,황해남도 룡연군,38.15000,124.88333,5.0,compare,1
+47070,개성,GTS,개성시,37.96667,126.56667,72.0,compare,1
+112,인천,ASOS,인천광역시,37.47772,126.62490,69.0,compare,1

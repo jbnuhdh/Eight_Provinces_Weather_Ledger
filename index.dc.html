@@ -4,6 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script>
+// 게임판이 1000x640 고정이다. 부모가 flex라 창을 좁히면 가로만 눌리고
+// 세로는 640으로 남아 그림이 늘어져 보였다. 비율을 지키면서 창에 맞춰
+// 통째로 줄인다 — 픽셀 아트라 정수배가 아니어도 scale이 가장 깔끔하다.
+(function () {
+  var W = 1000, H = 640, PAD = 24;
+  function board() {
+    return document.querySelector('[data-board]') ||
+      Array.prototype.find.call(
+        document.querySelectorAll('div[style]'),
+        function (d) {
+          var s = d.getAttribute('style') || '';
+          return s.indexOf('width:1000px') >= 0 && s.indexOf('height:640px') >= 0;
+        });
+  }
+  function fit() {
+    var el = board();
+    if (!el) return;
+    var box = el.parentNode;
+    var s = Math.min(1, (window.innerWidth - PAD) / W, (window.innerHeight - PAD) / H);
+    el.style.transformOrigin = 'top left';
+    el.style.transform = 'scale(' + s + ')';
+    el.style.flex = 'none';
+    // 줄인 만큼 자리도 줄여야 빈 공간이나 스크롤바가 안 생긴다.
+    if (box && box.style) {
+      box.style.width = Math.round(W * s) + 'px';
+      box.style.height = Math.round(H * s) + 'px';
+      box.style.flex = 'none';
+    }
+  }
+  addEventListener('resize', fit);
+  addEventListener('orientationchange', fit);
+  // 프레임워크가 그린 뒤에 잡아야 한다. 처음 몇 초는 지켜본다.
+  new MutationObserver(fit).observe(document.documentElement,
+    { childList: true, subtree: true });
+  addEventListener('DOMContentLoaded', fit);
+  fit();
+})();
+</script>
+
 </head>
 <body>
 <x-dc>
@@ -64,8 +104,8 @@
 </style>
 </helmet>
 
-<div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; background:radial-gradient(circle at 50% 30%,#2a2117,#15110c);">
-<div style="position:relative; width:1000px; height:640px; overflow:hidden; background:#0d1a26; border:5px solid #3a2614; box-shadow:0 0 0 4px #6b4a2c, 0 14px 40px rgba(0,0,0,.6); image-rendering:pixelated; user-select:none;">
+<div style="width:100%; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; background:radial-gradient(circle at 50% 30%,#2a2117,#15110c);"><div style="flex:none;">
+<div data-board style="position:relative; width:1000px; height:640px; overflow:hidden; background:#0d1a26; border:5px solid #3a2614; box-shadow:0 0 0 4px #6b4a2c, 0 14px 40px rgba(0,0,0,.6); image-rendering:pixelated; user-select:none;">
 <sc-if value="{{ adminOn }}" hint-placeholder-val="{{ false }}">
   <div onClick="{{ onAdminOpen }}" style="position:absolute; left:8px; top:8px; z-index:99; font-family:'Galmuri11'; font-size:10px; padding:3px 7px; color:#fff; background:#b5262a; border:2px solid #fff8e6; box-shadow:2px 2px 0 rgba(0,0,0,.4); cursor:pointer;">🔧 관리자</div>
 </sc-if>
@@ -1576,6 +1616,7 @@
     </div>
   </div>
 </sc-if>
+</div>
 </div>
 </div>
 
@@ -3966,20 +4007,14 @@ class Component extends DCLogic {
       if (el) el.scrollTop = el.scrollHeight;
     }
   }
-  // 아이가 지금 어디에 서 있는지. 서버가 그 자리의 실제 관측으로 답한다.
-  //
-  // **여정 화면일 때만 보낸다.** 예전엔 지도·타이틀 화면에서도 '팔도 지도'
-  // 같은 이름을 실어 보냈는데, 서버는 그걸 '아이가 서 있는 장소'로 읽는다.
-  // 장소를 아는 것으로 치니까 "어제 우리 동네 더웠는데 왜 그래?"에 어느
-  // 동네인지 되묻질 않았다. 여정 밖에서는 우리도 아이가 어디 사는지 모른다.
   currentContext() {
     const st = this.state;
-    const inJourney = st.screen === 'journey' && st.journey
-      && this.stages[st.journey.stage];
-    return {
-      region: '강원',
-      stage: inJourney ? this.stages[st.journey.stage].name : '',
-    };
+    // 여정 화면에서만 장소를 보낸다. 지도·타이틀·실험실 이름을 실어 보내면
+    // 서버가 그걸 '아이가 서 있는 장소'로 읽어, 장소를 아는 것으로 친다.
+    // 그러면 "어제 우리 동네 더웠는데 왜 그래?"에 어느 동네인지 되묻질 않는다.
+    let stage = '';
+    if (st.screen === 'journey' && st.journey) stage = this.stages[st.journey.stage].name;
+    return { region: '강원', stage };
   }
   openChat() {
     this.keys = { left: false, right: false, shift: false };
@@ -4027,7 +4062,7 @@ class Component extends DCLogic {
       push(data.answer || this.weatherAnswer(q));
     } catch (err) {
       push(this.weatherAnswer(q));   // 서버가 죽어도 게임은 계속된다
-    }
+    };
   }
   weatherAnswer(question) {
     const q = String(question).toLowerCase().replace(/[\s?!.,~`'"()]/g, '');
