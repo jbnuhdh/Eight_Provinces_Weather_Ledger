@@ -1709,7 +1709,7 @@ class Component extends DCLogic {
     };
     // 자체 호스팅 LLM 게이트웨이 호출. 실패하면 내장 날씨 지식으로 대체한다.
     // 시스템 프롬프트·중의어 규칙·기상 관측 조회는 전부 서버가 맡는다.
-    const WEATHER_API = 'https://decide-platform-asus-direction.trycloudflare.com/chat';
+    const WEATHER_API = 'https://interactive-flexible-limited-regions.trycloudflare.com/chat';
     try {
       const r = await fetch(WEATHER_API, {
         method: 'POST',
